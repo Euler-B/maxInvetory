@@ -1,4 +1,4 @@
 ## WIP!!!
-*Make API's and backend in generaly is very fun!!!*
+*Making APIs and backend in Golang is a lot of fun!!!*
 
-![image](https://i.giphy.com/3ov9jScWmv8WqHtVkY.webp)
+![image](https://i.giphy.com/3ddUMfA7cmq4l784JX.webp)
