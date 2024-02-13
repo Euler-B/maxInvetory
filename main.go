@@ -4,8 +4,9 @@ import (
 	"context"
 
 	"github.com/euler-b/maxInventoryProject/database"
+	"github.com/euler-b/maxInventoryProject/internal/repository"
+	"github.com/euler-b/maxInventoryProject/internal/service"
 	"github.com/euler-b/maxInventoryProject/settings"
-	"github.com/jmoiron/sqlx"
 
 	"go.uber.org/fx"
 )
@@ -16,18 +17,26 @@ func main() {
 			context.Background,
 			settings.New,
 			database.New,
+			repository.New,
+			service.New,
 		),
 
 		fx.Invoke(
-			func(db *sqlx.DB) {
-				_, err := db.Query("select * from USERS")
+			func(ctx context.Context, serv service.Service) {
+				err := serv.RegisterUser(ctx, "micorreo@mail.com", "myName", "myPassword")
 				if err != nil {
 					panic(err)
+				}
+				u, err := serv.LoginUser(ctx, "micorreo@mail.com", "myPassword")
+				if err != nil {
+					panic(err)
+				}
+				if u.Name != "myName" {
+					panic("Wrong Name")
 				}
 			},
 		),
 	)
 	app.Run()
 
-	// Dejo este codigo presente en este commit para saber si el app en cuestion esta funcionando.
 }
