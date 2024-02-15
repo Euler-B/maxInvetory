@@ -17,6 +17,10 @@ type Repository interface {
 	SaveUserRole(ctx context.Context, userID, roleID int64) error
 	RemoveUserRole(ctx context.Context, userID, roleID int64) error
 	GetUserByRoles(ctx context.Context, userID int64) ([]entity.USER_ROLE, error)
+
+	SaveProduct(ctx context.Context, name, description string, price float32, createdBy int64) error
+	GetProducts(ctx context.Context) ([]entity.Product, error)
+	GetProduct(ctx context.Context, id int64) (*entity.Product, error)
 }
 
 // Este struct implementa la interfaz de repository
