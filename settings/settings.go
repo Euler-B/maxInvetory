@@ -18,11 +18,12 @@ type DatabaseConfig struct {
 }
 
 type Settings struct {
+	Host string         `yaml:"host"`
 	Port string         `yaml:"port"`
 	DB   DatabaseConfig `yaml:"database"`
 }
 
-func New() (*Settings, error ){
+func New() (*Settings, error) {
 	var s Settings
 
 	err := yaml.Unmarshal(settingsFile, &s)
