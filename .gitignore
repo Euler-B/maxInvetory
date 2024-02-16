@@ -1,1 +1,4 @@
 datadir/
+index.html 
+# El archivo index.html solo uso para debbug de mis metodos de seguridad en la api
+
