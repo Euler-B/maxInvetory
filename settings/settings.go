@@ -1,34 +1,45 @@
 package settings
 
 import (
-	_ "embed"
+	"log"
+	"os"
 
-	"gopkg.in/yaml.v3"
+	"github.com/joho/godotenv"
 )
 
-//go:embed settings.yml
-var settingsFile []byte
-
 type DatabaseConfig struct {
-	Host     string `yaml:"host"`
-	Port     int    `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
-	Name     string `yaml:"name"`
+	Host     string `string:"host"`
+	Port     string `string:"port"`
+	User     string `string:"user"`
+	Password string `string:"password"`
+	Name     string `string:"name"`
 }
 
 type Settings struct {
-	Host string         `yaml:"host"`
-	Port string         `yaml:"port"`
-	DB   DatabaseConfig `yaml:"database"`
+	Host string         `string:"host"`
+	Port string         `int64:"port"`
+	DB   DatabaseConfig `string:"database"`
 }
 
-func New() (*Settings, error) {
-	var s Settings
-
-	err := yaml.Unmarshal(settingsFile, &s)
+func init() {
+	err := godotenv.Load(".env")
 	if err != nil {
-		return nil, err
+		log.Fatal("Error loading .env")
 	}
-	return &s, nil
+}
+
+func New() *Settings {
+	dbConf := DatabaseConfig{
+		Host:     os.Getenv("D_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		User:     os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		Name:     os.Getenv("DB_NAME"),
+	}
+	s := Settings{
+		Host: os.Getenv("HOST_SERVER"),
+		Port: os.Getenv("PORT_SERVER"),
+		DB:   dbConf,
+	}
+	return &s
 }

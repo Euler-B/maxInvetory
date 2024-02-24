@@ -11,7 +11,7 @@ import (
 
 func New(ctx context.Context, s *settings.Settings) (*sqlx.DB, error) {
 	connectionString := fmt.Sprintf(
-		"%s:%s@tcp(%s:%d)/%s?parseTime=true",
+		"%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		s.DB.User,
 		s.DB.Password,
 		s.DB.Host,

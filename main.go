@@ -37,7 +37,17 @@ func main() {
 func setLifeCycle(lc fx.Lifecycle, a *api.API, s *settings.Settings, e *echo.Echo) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error { // el context usado aqui es el propio de la libreria fx
+			dbAddress := fmt.Sprintf(
+				"%s:%s@tcp(%s:%s)/%s?parseTime=true",
+				s.DB.User,
+				s.DB.Password,
+				s.DB.Host,
+				s.DB.Port,
+				s.DB.Name,
+			)
+			println(dbAddress)
 			address := fmt.Sprintf("%s:%s", s.Host, s.Port)
+			println(address)
 			go a.Start(e, address)
 
 			return nil
