@@ -23,10 +23,13 @@ start-db:
 
 
 migrate-db:
-	migrate -path database/migrations/ -database ${MARIADB_URL} up
+	migrate -path database/migrations/ -database ${DB_URL} up
 
 migrate-db-rollback:
-	migrate -path database/migrations/ -database ${MARIADB_URL} down
+	migrate -path database/migrations/ -database ${DB_URL} down
+
+migrate-fix:
+	migrate -path database/migrations/ -database ${DB_URL} force 1
 
 tests:
 	 go test -v ./...

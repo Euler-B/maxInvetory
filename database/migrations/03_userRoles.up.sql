@@ -1,4 +1,4 @@
-create table USERS_ROLES(
+create table USER_ROLES(
     id int not null auto_increment,
     user_id int not null,
     role_id int not null,
