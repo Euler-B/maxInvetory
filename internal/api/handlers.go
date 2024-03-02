@@ -1,6 +1,8 @@
 package api
 
 import (
+	"errors"
+	"github.com/euler-b/maxInventoryProject/internal/models"
 	"log"
 	"net/http"
 
@@ -72,9 +74,59 @@ func (a *API) LoginUser(c echo.Context) error {
 		Secure:   true,
 		SameSite: http.SameSiteNoneMode,
 		HttpOnly: true,
+		Path: "/",
 	}
 
 	c.SetCookie(cookie)
 
 	return c.JSON(http.StatusOK, map[string]string{"success": "true"})
+}
+
+func (a *API) AddProducts(c echo.Context) error {
+	// obtenemos la autenticacion de la cookie
+	cookie, err := c.Cookie("Authorization")
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusUnauthorized, responseMessage{Message: "Unauthorized"})
+	}
+
+	// parseamos el JWT obtenido
+	claims, err := encryption.ParseLoginJWT(cookie.Value)
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusUnauthorized, responseMessage{Message: "Unauthorized"})
+	}
+	email := claims["email"].(string)
+
+	ctx := c.Request().Context()
+
+	// obtenemos la informacion del request
+	params := dtos.AddProduct{}
+	err = c.Bind(&params)
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
+	}
+
+	err = a.dataValidator.Struct(params)
+	if err != nil {
+		log.Println(http.StatusBadRequest, responseMessage{Message: err.Error()})
+	}
+
+	p := models.Product{
+		Name:        params.Name,
+		Description: params.Description,
+		Price:       params.Price,
+	}
+
+	err = a.serv.AddProduct(ctx, p, email)
+	if err != nil {
+		log.Println(err)
+
+		if errors.Is(err, service.ErrInvalidPermission) {
+			return c.JSON(http.StatusForbidden, responseMessage{Message: "Invalid Permissions"})
+		}
+		return c.JSON(http.StatusInternalServerError, responseMessage{Message: "Internal Server Error"})
+	}
+	return c.JSON(http.StatusOK, nil)
 }
