@@ -10,7 +10,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/stretchr/testify v1.9.0
-	go.uber.org/fx v1.22.2
+	go.uber.org/fx v1.23.0
 )
 
 require (
